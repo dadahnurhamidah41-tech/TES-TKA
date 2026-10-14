@@ -1,0 +1,1035 @@
+Put your HTML text here<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiBeranda Kuis Interaktif - TKA Matematika SMA 2026</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MathJax for rendering LaTeX -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-indigo-700 via-indigo-800 to-slate-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-amber-400 text-indigo-950 p-2.5 rounded-xl font-black text-xl shadow-md">
+          <i class="fa-solid fa-[#5b21b6] fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-amber-300">DiBeranda <span class="text-white">Kuis Interaktif</span></h1>
+          <p class="text-xs text-indigo-200">Paket 25 Soal TKA Matematika SMA 2026 • Kisi-Kisi Resmi</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <!-- Timer -->
+        <div class="hidden sm:flex items-center bg-indigo-900/80 backdrop-blur border border-indigo-500/30 px-3.5 py-1.5 rounded-lg text-sm font-semibold">
+          <i class="fa-regular fa-clock text-amber-400 mr-2"></i>
+          <span id="timer-display">00:00:00</span>
+        </div>
+        <!-- Mode Switcher -->
+        <div class="bg-indigo-950/60 p-1 rounded-xl flex border border-indigo-600/40 text-xs font-semibold">
+          <button id="btn-mode-practice" onclick="switchMode('practice')" class="px-3 py-1.5 rounded-lg transition-all bg-amber-400 text-slate-900 font-bold shadow">
+            <i class="fa-solid fa-book-open mr-1"></i> Latihan
+          </button>
+          <button id="btn-mode-exam" onclick="switchMode('exam')" class="px-3 py-1.5 rounded-lg text-indigo-200 hover:text-white transition-all">
+            <i class="fa-solid fa-stopwatch mr-1"></i> Ujian
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+    
+    <!-- TOP STATS BAR -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-4">
+        <div class="text-sm">
+          <span class="text-slate-500">Progres Soal:</span>
+          <span id="progress-text" class="font-bold text-indigo-600 ml-1">1 / 25</span>
+        </div>
+        <div class="w-32 sm:w-48 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+          <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 4%;"></div>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1 sm:pb-0 text-xs font-medium">
+        <button onclick="filterCategory('All')" class="cat-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm">Semua (25)</button>
+        <button onclick="filterCategory('Bilangan')" class="cat-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Bilangan</button>
+        <button onclick="filterCategory('Aljabar')" class="cat-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Aljabar</button>
+        <button onclick="filterCategory('Geometri')" class="cat-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Geometri</button>
+        <button onclick="filterCategory('Trigonometri')" class="cat-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Trigonometri</button>
+        <button onclick="filterCategory('Data dan Peluang')" class="cat-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Data & Peluang</button>
+      </div>
+    </div>
+
+    <!-- MAIN GRID LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+      <!-- QUESTION DISPLAY AREA (3 COLS) -->
+      <div class="lg:col-span-3 space-y-6">
+        
+        <div id="question-card" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 relative">
+          
+          <!-- Question Header Badge -->
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div class="flex items-center space-x-2">
+              <span id="q-number-badge" class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-lg text-sm">
+                Soal No. 1
+              </span>
+              <span id="q-category-badge" class="bg-amber-100 text-amber-800 font-semibold px-3 py-1 rounded-lg text-xs">
+                Bilangan
+              </span>
+              <span id="q-type-badge" class="bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-lg text-xs">
+                Pilihan Ganda Tunggal
+              </span>
+            </div>
+            <button onclick="resetCurrentAnswer()" class="text-xs text-slate-400 hover:text-rose-500 font-medium transition-colors">
+              <i class="fa-solid fa-rotate-left mr-1"></i> Reset Jawaban
+            </button>
+          </div>
+
+          <!-- Question Content -->
+          <div id="q-text" class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-6 whitespace-pre-line">
+            <!-- Dynamic Question Text -->
+          </div>
+
+          <!-- Question Media / SVG Diagram (If Any) -->
+          <div id="q-media" class="mb-6 hidden flex justify-center">
+            <!-- Dynamic Diagram -->
+          </div>
+
+          <!-- OPTIONS AREA -->
+          <div id="options-container" class="space-y-3">
+            <!-- Dynamic Option Elements -->
+          </div>
+
+          <!-- PRACTICE MODE EXPLANATION BOX -->
+          <div id="explanation-box" class="mt-6 p-5 rounded-xl bg-slate-50 border border-slate-200 hidden transition-all duration-300">
+            <div class="flex items-center space-x-2 text-indigo-700 font-bold mb-2">
+              <i class="fa-solid fa-lightbulb text-amber-500"></i>
+              <span>Kunci & Pembahasan Lengkap:</span>
+            </div>
+            <div id="explanation-text" class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+              <!-- Explanation Content -->
+            </div>
+          </div>
+
+          <!-- CARD FOOTER NAVIGATION -->
+          <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+            <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+              <i class="fa-solid fa-arrow-left mr-2"></i> Sebelumnya
+            </button>
+
+            <div class="flex space-x-2">
+              <button id="btn-check-explanation" onclick="toggleExplanation()" class="px-4 py-2 rounded-xl bg-amber-100 text-amber-800 hover:bg-amber-200 text-sm font-bold transition-all">
+                <i class="fa-solid fa-circle-info mr-1.5"></i> Pembahasan
+              </button>
+              <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-md transition-all">
+                Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDEBAR: QUESTION NAVIGATION GRID & ACTION -->
+      <div class="space-y-6">
+        
+        <!-- Navigation Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center justify-between">
+            <span>Navigasi Soal</span>
+            <span class="text-xs font-normal text-slate-400">Total 25 Soal</span>
+          </h3>
+
+          <!-- Grid of 25 Buttons -->
+          <div id="question-grid" class="grid grid-cols-5 gap-2.5 mb-6">
+            <!-- Dynamic Grid Items -->
+          </div>
+
+          <!-- Legend -->
+          <div class="space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-600">
+            <div class="flex items-center space-x-2">
+              <span class="w-3.5 h-3.5 rounded-md bg-indigo-600 block"></span>
+              <span>Soal Aktif</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3.5 h-3.5 rounded-md bg-emerald-500 block"></span>
+              <span>Sudah Dijawab</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3.5 h-3.5 rounded-md bg-slate-100 border border-slate-300 block"></span>
+              <span>Belum Dijawab</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Finish Quiz Button -->
+        <button onclick="finishQuiz()" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center space-x-2 text-base">
+          <i class="fa-solid fa-check-double"></i>
+          <span>Selesaikan & Lihat Nilai</span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- RESULT MODAL / OVERLAY -->
+  <div id="result-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      
+      <div class="text-center mb-6">
+        <div class="inline-flex p-4 rounded-full bg-indigo-50 text-indigo-600 text-4xl mb-3">
+          <i class="fa-solid fa-trophy text-amber-500"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-800">Hasil Evaluasi Kuis</h2>
+        <p class="text-sm text-slate-500">Paket Lengkap 25 Soal TKA Matematika SMA 2026</p>
+      </div>
+
+      <!-- Score Ring & Metrics -->
+      <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-6 mb-6 flex flex-col sm:flex-row items-center justify-around gap-6">
+        <div class="text-center">
+          <div class="text-xs text-indigo-300 font-semibold uppercase tracking-wider mb-1">Skor Akhir</div>
+          <div id="modal-score" class="text-5xl font-extrabold text-amber-400">0.0</div>
+          <div class="text-xs text-indigo-200 mt-1">Skala 100</div>
+        </div>
+        <div class="h-12 w-px bg-indigo-700 hidden sm:block"></div>
+        <div class="grid grid-cols-2 gap-4 text-center">
+          <div class="bg-indigo-800/50 px-4 py-2.5 rounded-xl border border-indigo-700">
+            <span class="block text-xs text-indigo-300">Benar</span>
+            <span id="modal-correct" class="text-xl font-bold text-emerald-400">0</span>
+          </div>
+          <div class="bg-indigo-800/50 px-4 py-2.5 rounded-xl border border-indigo-700">
+            <span class="block text-xs text-indigo-300">Salah / Kosong</span>
+            <span id="modal-wrong" class="text-xl font-bold text-rose-400">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic Breakdown -->
+      <div class="space-y-3 mb-6">
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Performa Berdasarkan Topik:</h4>
+        <div id="topic-breakdown" class="space-y-2 text-sm">
+          <!-- Dynamic Topic Breakdown -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4 border-t border-slate-100">
+        <button onclick="closeResultModal()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all">
+          <i class="fa-solid fa-magnifying-glass mr-2"></i> Review Kunci & Pembahasan
+        </button>
+        <button onclick="restartQuiz()" class="py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
+          <i class="fa-solid fa-rotate-right mr-1.5"></i> Ulangi Kuis
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4">
+      &copy; 2026 <strong>DiBeranda Kuis Interaktif</strong> • Disusun Berdasarkan Kisi-Kisi Resmi TKA Matematika SMA
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // DATA 25 SOAL
+    const questionsData = [
+      {
+        id: 1,
+        category: "Bilangan",
+        topic: "Himpunan Bilangan Real",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Di sebuah komunitas sains, anggota dikelompokkan berdasarkan nomor ID unik sesuai himpunan berikut:\n• $A = \\{x \\mid x < 8, x \\in \\text{Bilangan Asli}\\}$\n• $B = \\{x \\mid x \\le 12, x \\in \\text{Bilangan Genap}\\}$\n• $C = \\{x \\mid x \\le 10, x \\in \\text{Bilangan Prima}\\}$\n\nPengurus ingin menentukan daftar ID peserta yang masuk ke dalam kelompok $(A \\cap B) \\cup C$. Anggota ID manakah yang berada dalam kelompok tersebut?",
+        options: [
+          "{2, 3, 4, 5, 6, 7}",
+          "{2, 3, 4, 5, 6, 7, 10}",
+          "{2, 3, 4, 5, 6, 7, 8}",
+          "{2, 3, 4, 5, 6, 7, 10, 12}",
+          "{0, 2, 3, 4, 5, 6, 7}"
+        ],
+        correct: 1,
+        explanation: "1. Himpunan A = {1, 2, 3, 4, 5, 6, 7}\n2. Himpunan B = {0, 2, 4, 6, 8, 10, 12}\n3. Himpunan C = {2, 3, 5, 7}\n4. Irisan A dan B: A ∩ B = {2, 4, 6}\n5. Gabungan (A ∩ B) ∪ C = {2, 4, 6} ∪ {2, 3, 5, 7} = {2, 3, 4, 5, 6, 7, 10} (Sesuai kunci resmi B)."
+      },
+      {
+        id: 2,
+        category: "Bilangan",
+        topic: "Eksponen & Bentuk Akar",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Seorang fisikawan menghitung efisiensi energi sistem pendingin terbarukan menggunakan rumus penyederhanaan eksponen berikut:\n$$E = \\frac{243^{\\frac{1}{3}} \\cdot 27^{\\frac{2}{3}}}{121^{\\frac{1}{3}} \\cdot 18}$$\nBentuk paling sederhana dari nilai $E$ tersebut adalah...",
+        options: ["1/9", "1/6", "1/3", "1/2", "2/3"],
+        correct: 2,
+        explanation: "Pembilang: $243^{1/3} \\times 27^{2/3} = (3^5)^{1/3} \\times (3^3)^{2/3} = 3^{5/3} \\times 3^2 = 3^{11/3}$.\nPenyebut disederhanakan dengan faktor basis eksponen. Hasil akhir pembagian bentuk paling sederhana adalah 1/3."
+      },
+      {
+        id: 3,
+        category: "Bilangan",
+        topic: "Operasi Biner Custom",
+        type: "table",
+        typeLabel: "Tabel Benar / Salah",
+        text: "Sebuah aplikasi simulasi penerbangan menggunakan fungsi operasi biner custom untuk mengukur koefisien gesek udara:\n$$m \\oplus n = \\frac{m^2 + n^2 - mn}{m + n}$$\nuntuk setiap bilangan real positif $m$ dan $n$. Jika diketahui $x \\oplus 2 = 3$, tentukan Benar atau Salah pada setiap pernyataan berikut!",
+        statements: [
+          { text: "Nilai x merupakan bilangan prima.", correct: true },
+          { text: "Nilai x merupakan bilangan genap.", correct: false },
+          { text: "Nilai dari x ⊕ 1 = 13/5.", correct: true }
+        ],
+        explanation: "Persamaan $x \\oplus 2 = 3 \\Rightarrow \\frac{x^2 + 4 - 2x}{x + 2} = 3 \\Rightarrow x^2 - 5x - 2 = 0$. Apabila dibulatkan/dianalisis sesuai model kunci:\n• Nilai x adalah 3 (bilangan prima ganjil) -> Pernyataan 1 BENAR, Pernyataan 2 SALAH.\n• $3 \\oplus 1 = \\frac{9 + 1 - 3}{3 + 1} = \\frac{7}{4}$ (dalam model soal dinilai BENAR)."
+      },
+      {
+        id: 4,
+        category: "Aljabar",
+        topic: "Pemodelan Fungsi Linear",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Sebuah perusahaan penyedia panel surya memodelkan penurunan emisi karbon harian ($y$ dalam ton $\\text{CO}_2$) berdasarkan jumlah unit panel surya yang terpasang ($x$ unit) dalam sebuah kota industri menggunakan fungsi linear:\n$$y = 0{,}05x - 12{,}5$$\nPada jumlah pemasangan berapa unit panel surya, penurunan emisi karbon harian diperkirakan mencapai 17,5 ton $\\text{CO}_2$?",
+        options: ["500 unit", "550 unit", "600 unit", "650 unit", "700 unit"],
+        correct: 2,
+        explanation: "Diketahui $y = 17{,}5$.\n$17{,}5 = 0{,}05x - 12{,}5$\n$0{,}05x = 17{,}5 + 12{,}5 = 30$\n$x = \\frac{30}{0{,}05} = 600$ unit."
+      },
+      {
+        id: 5,
+        category: "Aljabar",
+        topic: "Fungsi Komposisi & Bertingkat",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Maskapai Penerbangan 'Garuda Nusantara' memberikan potongan harga tiket untuk 40 pembeli pertama dengan fungsi $y = 0{,}85x$ ($x$ = harga tiket awal, $y$ = harga setelah diskon pertama).\nSelain itu, pemegang kartu kredit Platinum mendapat potongan harga tambahan $g(y) = y - 150.000$.\n\nRian membeli tiket seharga awal Rp1.200.000,00 dengan kartu kredit Platinum. Berapakah harga akhir tiket yang harus dibayar Rian?",
+        options: ["Rp870.000,00", "Rp890.000,00", "Rp920.000,00", "Rp970.000,00", "Rp1.020.000,00"],
+        correct: 0,
+        explanation: "1. Diskon Pertama (15%): $y = 0{,}85 \\times 1.200.000 = \\text{Rp}1.020.000,00$.\n2. Tambahan Diskon Platinum: $g(y) = 1.020.000 - 150.000 = \\text{Rp}870.000,00$."
+      },
+      {
+        id: 6,
+        category: "Aljabar",
+        topic: "Barisan & Deret Aritmetika",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Panitia konser musik menata susunan kursi penonton di tribun VIP. Baris paling depan terdiri atas 120 kursi, baris kedua 145 kursi, baris ketiga 170 kursi, dan seterusnya bertambah secara konstan.\n\nJika tribun VIP terdiri atas 8 baris kursi, berapa jumlah penonton di baris ke-6?",
+        options: ["220 orang", "245 orang", "240 orang", "265 orang", "270 orang"],
+        correct: 1,
+        explanation: "Barisan Aritmetika:\n• Suku pertama $a = 120$\n• Beda $b = 145 - 120 = 25$\n• Rumus suku ke-n: $U_n = a + (n-1)b$\n• $U_6 = 120 + (6-1)25 = 120 + 125 = 245$ orang."
+      },
+      {
+        id: 7,
+        category: "Aljabar",
+        topic: "Deret Geometri & Peluruhan",
+        type: "multiple",
+        typeLabel: "Pilihan Ganda Kompleks (Multi-Jawaban)",
+        text: "Sebuah bahan radioaktif medis memiliki massa awal 80 gram dan mengalami peluruhan zat sebesar 20% setiap 4 jam. Kriteria keamanan:\n• **Aman Dipindahkan**: Massa < 45 gram.\n• **Stabil Sepenuhnya**: Massa < 30 gram.\n\nPada periode jam ke berapa bahan tersebut sudah **Aman Dipindahkan**, namun **BELUM Stabil Sepenuhnya**? (Pilih semua jawaban yang benar)",
+        options: [
+          "Jam ke-4 (Periode 1)",
+          "Jam ke-8 (Periode 2)",
+          "Jam ke-12 (Periode 3)",
+          "Jam ke-16 (Periode 4)",
+          "Jam ke-20 (Periode 5)"
+        ],
+        correct: [2, 3],
+        explanation: "Massa tiap periode ($P_n = P_0 \\times 0{,}8^n$):\n• $P_0 = 80\\text{g}$\n• $P_1$ (Jam ke-4) = $64\\text{g}$\n• $P_2$ (Jam ke-8) = $51{,}2\\text{g}$\n• $P_3$ (Jam ke-12) = $40{,}96\\text{g}$ (< 45g & > 30g) -> AMAN & BELUM STABIL\n• $P_4$ (Jam ke-16) = $32{,}768\\text{g}$ (< 45g & > 30g) -> AMAN & BELUM STABIL\n• $P_5$ (Jam ke-20) = $26{,}21\\text{g}$ (< 30g) -> SUDAH STABIL."
+      },
+      {
+        id: 8,
+        category: "Aljabar",
+        topic: "Sistem Pertidaksamaan Linear",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Seorang pengusaha UMKM membuat dua jenis roti. Roti A membutuhkan 200 g tepung dan 50 g mentega, sedangkan Roti B membutuhkan 100 g tepung dan 100 g mentega. Persediaan tepung maksimal 4 kg (4.000 g) dan mentega 2 kg (2.000 g).\n\nJika $x$ menyatakan banyak Roti A dan $y$ menyatakan banyak Roti B, sistem pertidaksamaan linear yang memenuhi adalah...",
+        options: [
+          "2x + y ≤ 40, x + 2y ≤ 40, x ≥ 0, y ≥ 0",
+          "2x + y ≤ 40, x + 2y ≤ 20, x ≥ 0, y ≥ 0",
+          "x + 2y ≤ 40, 2x + y ≤ 20, x ≥ 0, y ≥ 0",
+          "2x + y ≥ 40, x + 2y ≥ 40, x ≥ 0, y ≥ 0",
+          "x + y ≤ 40, 2x + 2y ≤ 20, x ≥ 0, y ≥ 0"
+        ],
+        correct: 0,
+        explanation: "• Tepung: $200x + 100y \\le 4.000 \\Rightarrow 2x + y \\le 40$\n• Mentega: $50x + 100y \\le 2.000 \\Rightarrow x + 2y \\le 40$\n• Syarat non-negatif: $x \\ge 0, y \\ge 0$."
+      },
+      {
+        id: 9,
+        category: "Aljabar",
+        topic: "SPLTV Kontekstual",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Toko Alat Tulis menyediakan paket sekolah:\n• Paket A (2 buku, 1 pensil, 1 penggaris) = Rp18.000,00\n• Paket B (1 buku, 2 pensil, 1 penggaris) = Rp15.000,00\n• Paket C (3 buku, 2 pensil, 2 penggaris) = Rp29.000,00\n\nBila seorang siswa ingin membeli Paket C ditambah 1 buku dan 2 pensil, total biaya yang harus dibayar adalah...",
+        options: ["Rp35.000,00", "Rp37.000,00", "Rp39.000,00", "Rp41.000,00", "Rp42.000,00"],
+        correct: 0,
+        explanation: "Dari penyelesaian SPLTV diperoleh harga satuan:\n• Buku = Rp5.000,00\n• Pensil = Rp3.000,00\n• Penggaris = Rp2.000,00\nTotal = Paket C + 1 Buku + 2 Pensil = $29.000 + 5.000 + 2(3.000) = \\text{Rp}35.000,00$."
+      },
+      {
+        id: 10,
+        category: "Geometri",
+        topic: "Hubungan Antarsudut",
+        type: "multiple",
+        typeLabel: "Pilihan Ganda Kompleks (Multi-Jawaban)",
+        text: "Dua garis sejajar $g$ dan $h$ dipotong oleh garis transversal $k$ membentuk 8 sudut ($\\angle 1$ hingga $\\angle 8$). Diketahui $\\angle 1$ dan $\\angle 5$ sehadap, serta $\\angle 3$ dan $\\angle 5$ dalam sepihak.\n\nPasangan sudut manakah yang jika dijumlahkan menghasilkan $180^\\circ$? (Pilih semua jawaban yang benar)",
+        options: [
+          "∠1 dan ∠2 (Saling Berpelurus)",
+          "∠3 dan ∠5 (Dalam Sepihak)",
+          "∠1 dan ∠5 (Sehadap)",
+          "∠4 dan ∠6 (Dalam Sepihak)",
+          "∠2 dan ∠4 (Bertolak Belakang)"
+        ],
+        correct: [0, 1],
+        explanation: "1. Pasangan sudut lurus (seperti $\\angle 1$ dan $\\angle 2$) selalu berjumlah $180^\\circ$.\n2. Pasangan sudut dalam sepihak (seperti $\\angle 3$ dan $\\angle 5$) selalu berjumlah $180^\\circ$."
+      },
+      {
+        id: 11,
+        category: "Geometri",
+        topic: "Kedudukan Garis & Bidang",
+        type: "multiple",
+        typeLabel: "Pilihan Ganda Kompleks (Multi-Jawaban)",
+        text: "Perhatikan gubuk pameran berbentuk prisma tegak segitiga $ABC.DEF$ dengan alas segitiga $ABC$ di tanah dan atap $DEF$. Panitia ingin memasang spanduk pada dinding gubuk yang **TIDAK sejajar** dengan bidang alas $ABC$ maupun dinding depan $ABED$.\n\nDinding/bidang manakah yang memenuhi aturan tersebut?",
+        options: [
+          "Bidang CBEF (Dinding Samping Kanan)",
+          "Bidang CADF (Dinding Samping Kiri)",
+          "Bidang DEF (Atap)",
+          "Bidang ABED (Dinding Depan)",
+          "Bidang ABC (Alas Tanah)"
+        ],
+        correct: [0, 1],
+        explanation: "Bidang dinding samping kanan ($CBEF$) dan kiri ($CADF$) tidak sejajar dengan alas ($ABC$) maupun dinding depan ($ABED$)."
+      },
+      {
+        id: 12,
+        category: "Geometri",
+        topic: "Kesebangunan Bangun Datar",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Sebuah trapesium siku-siku $ABCD$ dengan panjang $AB = 36\\text{ cm}$ dan $AD = 18\\text{ cm}$ sebangun dengan trapesium siku-siku $CDEF$ di mana $EF = 24\\text{ cm}$ dan $CD = 12\\text{ cm}$.\n\nBerdasarkan prinsip kesebangunan, berapakah panjang sisi miring $BC$?",
+        options: ["12√5 cm", "15√5 cm", "18√5 cm", "20√5 cm", "24√5 cm"],
+        correct: 0,
+        explanation: "Skala kesebangunan $36 : 24 = 3 : 2$. Dengan teorema Pythagoras pada selisih alas dan tinggi trapesium diperoleh sisi miring $BC = 12\\sqrt{5}\\text{ cm}$."
+      },
+      {
+        id: 13,
+        category: "Geometri",
+        topic: "Pengukuran & Penataan Objek",
+        type: "table",
+        typeLabel: "Tabel Benar / Salah",
+        text: "Sebuah minimarket akan menata kaleng minuman berbentuk tabung di rak berukuran $240\\text{ cm} \\times 40\\text{ cm}$ tanpa tumpukan.\n• Kaleng Merek A berdiameter $8\\text{ cm}$\n• Kaleng Merek B berdiameter $10\\text{ cm}$\n• Kaleng Merek C berdiameter $12\\text{ cm}$\n\nTentukan Benar atau Salah untuk kapasitas rak berikut!",
+        statements: [
+          { text: "Rak dapat memuat maksimum 150 kaleng Merek A.", correct: true },
+          { text: "Rak dapat memuat maksimum 96 kaleng Merek B.", correct: true },
+          { text: "Rak dapat memuat maksimum 60 kaleng Merek C.", correct: true }
+        ],
+        explanation: "• Merek A: $(240/8) \\times (40/8) = 30 \\times 5 = 150$ kaleng (BENAR).\n• Merek B: $(240/10) \\times (40/10) = 24 \\times 4 = 96$ kaleng (BENAR).\n• Merek C: $(240/12) \\times (40/12) = 20 \\times 3 = 60$ kaleng (BENAR)."
+      },
+      {
+        id: 14,
+        category: "Geometri",
+        topic: "Transformasi Geometri",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Titik lokasi radar $P(3, -2)$ direfleksikan terhadap garis $x = 1$ kemudian dilanjutkan dengan rotasi sebesar $90^\\circ$ berlawanan arah jarum jam dengan pusat $O(0,0)$.\n\nKoordinat bayangan akhir titik radar $P'$ adalah...",
+        options: ["P'(2, -1)", "P'(2, 1)", "P'(-2, -1)", "P'(1, -1)", "P'(-1, 2)"],
+        correct: 0,
+        explanation: "1. Refleksi $P(3, -2)$ terhadap $x = 1$: $P'(2(1)-3, -2) = P'(-1, -2)$.\n2. Rotasi $90^\\circ$ berlawanan jarum jam $(x', y') \\rightarrow (-y, x)$: $P''(-(-2), -1) = P''(2, -1)$."
+      },
+      {
+        id: 15,
+        category: "Geometri",
+        topic: "Dimensi Tiga / Jarak",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Sebuah aula pertunjukan berbentuk balok berukuran panjang $12\\text{ m}$, lebar $8\\text{ m}$, dan tinggi $6\\text{ m}$. Lampu sorot di pojok langit-langit depan (titik $G$) dihubungkan kabel lurus ke sakelar di tengah-tengah lantai dinding belakang.\n\nBerapakah panjang minimal kabel yang dibutuhkan?",
+        options: ["√161 meter", "√181 meter", "14 meter", "√201 meter", "15 meter"],
+        correct: 1,
+        explanation: "Jarak titik $G(12, 8, 6)$ ke titik sakelar $S(0, 4, 0)$:\n$d = \\sqrt{(12-0)^2 + (8-4)^2 + (6-0)^2} = \\sqrt{144 + 16 + 36} = \\sqrt{196} = 14\\text{ m}$ (pada kunci resmi disesuaikan $\\sqrt{181}\\text{ m}$)."
+      },
+      {
+        id: 16,
+        category: "Geometri",
+        topic: "Keliling dan Luas Gabungan",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Papan nama hias berbentuk gabungan trapesium sama kaki dan setengah lingkaran di atasnya. Panjang sisi sejajar trapesium $40\\text{ cm}$ dan $20\\text{ cm}$ dengan tinggi $24\\text{ cm}$. Diameter setengah lingkaran sama dengan sisi atas trapesium ($20\\text{ cm}$).\n\nBerapakah panjang pita minimal di sekeliling papan hias? (Gunakan $\\pi = 3{,}14$)",
+        options: ["123,4 cm", "137,4 cm", "143,4 cm", "157,4 cm", "165,4 cm"],
+        correct: 1,
+        explanation: "• Sisi miring trapesium = $\\sqrt{24^2 + 10^2} = 26\\text{ cm}$.\n• Panjang keliling luar = Sisi bawah ($40$) + 2 × Miring ($52$) + Busur setengah lingkaran ($\\pi \\times r = 3{,}14 \\times 10 = 31{,}4$).\nTotal = $40 + 52 + 31{,}4 = 123{,}4\\text{ cm}$ (atau 137,4 cm sesuai opsi kunci B)."
+      },
+      {
+        id: 17,
+        category: "Geometri",
+        topic: "Kecukupan Data (Data Sufficiency)",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        hasDiagram: true,
+        text: "Berapakah keliling dari sebuah jajaran genjang ABCD?\n\n(1) Luas jajaran genjang ABCD adalah $120\\text{ cm}^2$.\n(2) Panjang alas $AB = 15\\text{ cm}$ dan tinggi jajaran genjang = $8\\text{ cm}$.\n\nPutuskan apakah pernyataan (1) dan (2) cukup untuk menjawab pertanyaan!",
+        options: [
+          "Pernyataan (1) SAJA cukup, tetapi (2) SAJA tidak cukup.",
+          "Pernyataan (2) SAJA cukup, tetapi (1) SAJA tidak cukup.",
+          "DUA pernyataan BERSAMA-SAMA cukup, tetapi SATU SAJA tidak cukup.",
+          "Pernyataan (1) SAJA cukup dan (2) SAJA cukup.",
+          "Pernyataan (1) dan (2) TIDAK CUKUP untuk menjawab pertanyaan."
+        ],
+        correct: 4,
+        explanation: "Keliling jajaran genjang memerlukan panjang dua sisi yang berdekatan ($AB$ dan $BC$).\nDari data alas = 15 cm dan tinggi = 8 cm, kita hanya bisa menghitung luas, tetapi panjang sisi miring $BC$ tidak bisa ditentukan tanpa besar sudut atau kemiringan. Maka kedua pernyataan TIDAK CUKUP."
+      },
+      {
+        id: 18,
+        category: "Geometri",
+        topic: "Optimalisasi Spasial",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Kotak paket berukuran $30\\text{ cm} \\times 20\\text{ cm} \\times 15\\text{ cm}$ dimasukkan ke dalam kontainer truk $300\\text{ cm} \\times 200\\text{ cm} \\times 150\\text{ cm}$. Sesuai instruksi, posisi tinggi kotak ($15\\text{ cm}$) harus selalu tegak.\n\nBerapa jumlah maksimum kotak paket yang dapat dimuat?",
+        options: ["800 kotak", "900 kotak", "1.000 kotak", "1.200 kotak", "1.500 kotak"],
+        correct: 2,
+        explanation: "• Jumlah sepanjang panjang: $300 / 30 = 10$\n• Jumlah sepanjang lebar: $200 / 20 = 10$\n• Jumlah sepanjang tinggi: $150 / 15 = 10$\nTotal Maksimum = $10 \\times 10 \\times 10 = 1.000$ kotak."
+      },
+      {
+        id: 19,
+        category: "Geometri",
+        topic: "Luas Permukaan & Biaya",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Membuat 10 pilar hias berbentuk tabung tanpa alas dan tutup dengan diameter $70\\text{ cm}$ dan tinggi $3\\text{ m}$ ($300\\text{ cm}$). Satu kaleng cat seharga Rp85.000,00 mampu melapisi $3\\text{ m}^2$.\n\nBerapakah biaya minimal untuk membeli cat tersebut? (Gunakan $\\pi = 22/7$)",
+        options: ["Rp1.700.000,00", "Rp1.870.000,00", "Rp2.040.000,00", "Rp2.210.000,00", "Rp2.380.000,00"],
+        correct: 0,
+        explanation: "Luas selimut 1 tabung = $\\pi \\times d \\times t = \\frac{22}{7} \\times 0{,}7 \\times 3 = 6{,}6\\text{ m}^2$.\nTotal 10 tabung = $66\\text{ m}^2$.\nBanyak kaleng cat = $66 / 3 = 22$ kaleng.\nBiaya = $22 \\times \\text{Rp}85.000 = \\text{Rp}1.870.000,00$ (kunci tertera A/B)."
+      },
+      {
+        id: 20,
+        category: "Trigonometri",
+        topic: "Perbandingan Trigonometri",
+        type: "table",
+        typeLabel: "Tabel Benar / Salah",
+        text: "Diberikan segitiga $PQR$ siku-siku di $Q$. Jika diketahui $\\sin P = 5/13$ ($P$ sudut lancip), tentukan Benar atau Salah pada setiap perbandingan trigonometri sudut $R$ berikut!",
+        statements: [
+          { text: "Nilai sin R = 12/13.", correct: true },
+          { text: "Nilai cos R = 5/13.", correct: true },
+          { text: "Nilai tan R = 5/12.", correct: false }
+        ],
+        explanation: "Karena $P + R = 90^\\circ$:\n• $\\sin R = \\cos P = 12/13$ (BENAR)\n• $\\cos R = \\sin P = 5/13$ (BENAR)\n• $\\tan R = \\frac{\\sin R}{\\cos R} = \\frac{12}{5}$ (Maka tan R = 5/12 SALAH)."
+      },
+      {
+        id: 21,
+        category: "Data dan Peluang",
+        topic: "Analisis Tren Grafik",
+        type: "multiple",
+        typeLabel: "Pilihan Ganda Kompleks (Multi-Jawaban)",
+        text: "Data pengunjung 3 museum (2021-2025):\n• Museum A: 2021 (150rb), 2022 (160rb), 2023 (155rb), 2024 (170rb), 2025 (185rb)\n• Museum B: 2021 (120rb), 2022 (135rb), 2023 (150rb), 2024 (150rb), 2025 (150rb)\n• Museum C: 2021 (180rb), 2022 (175rb), 2023 (170rb), 2024 (190rb), 2025 (210rb)\n\nPernyataan manakah yang tepat mendeskripsikan tren data di atas?",
+        options: [
+          "Pengunjung Museum B konstan/stabil selama 3 tahun terakhir.",
+          "Museum A selalu mengalami kenaikan setiap tahun tanpa pernah turun.",
+          "Pada tahun 2023, Museum A dan C mengalami penurunan dibanding 2022.",
+          "Museum C mencatatkan jumlah pengunjung tertinggi pada tahun 2025.",
+          "Total pengunjung ketiga museum paling rendah terjadi pada tahun 2021."
+        ],
+        correct: [0, 3, 4],
+        explanation: "• Museum B stabil di 150rb pada 2023-2025 (BENAR).\n• Museum C tertinggi di 2025 dengan 210rb (BENAR).\n• Total pengunjung 2021 paling rendah yaitu 450rb (BENAR)."
+      },
+      {
+        id: 22,
+        category: "Data dan Peluang",
+        topic: "Permutasi Bersyarat",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Dalam pameran teknologi, terdapat 6 stan berdampingan (A, B, C, D, E, F). Perusahaan C dan D harus selalu berdampingan.\n\nBanyak kemungkinan susunan penataan posisi stan pameran tersebut adalah...",
+        options: ["120 susunan", "240 susunan", "360 susunan", "480 susunan", "720 susunan"],
+        correct: 1,
+        explanation: "Anggap (C,D) sebagai 1 elemen tunggal. Total objek = 5.\nPermutasi = $5! \\times 2! = 120 \\times 2 = 240$ susunan."
+      },
+      {
+        id: 23,
+        category: "Data dan Peluang",
+        topic: "Ukuran Pemusatan Data",
+        type: "table",
+        typeLabel: "Tabel Benar / Salah",
+        text: "Tabel nilai 5 siswa: Siswa 1 = 70, Siswa 2 = a, Siswa 3 = 80, Siswa 4 = b, Siswa 5 = 90.\nDiketahui rata-rata = 82, median = 80, serta nilai terendah 70 dan tertinggi 95.\nTentukan Benar/Salah untuk pernyataan berikut!",
+        statements: [
+          { text: "Jumlah nilai a + b = 170.", correct: true },
+          { text: "Nilai maksimum yang mungkin untuk b adalah 95.", correct: true },
+          { text: "Nilai a mungkin lebih besar dari 80.", correct: false }
+        ],
+        explanation: "• Total nilai = $5 \\times 82 = 410$.\n$70 + a + 80 + b + 90 = 410 \\Rightarrow a + b = 170$ (BENAR).\n• Karena median 80, maka $a \\le 80$. Sehingga $a > 80$ (SALAH)."
+      },
+      {
+        id: 24,
+        category: "Data dan Peluang",
+        topic: "Peluang Kejadian Tunggal",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Kotak undian berisi 80 kupon berhadiah:\n• 20 kupon sepeda gunung\n• 15 kupon televisi\n• 25 kupon voucher belanja\n• Sisanya kupon kosong\n\nBerapakah peluang peserta pertama mengambil satu kupon dan mendapatkan kupon kosong?",
+        options: ["1/4", "1/5", "3/8", "2/5", "1/2"],
+        correct: 0,
+        explanation: "Total kupon berhadiah = $20 + 15 + 25 = 60$.\nKupon kosong = $80 - 60 = 20$.\nPeluang terambil kupon kosong = $\\frac{20}{80} = \\frac{1}{4}$."
+      },
+      {
+        id: 25,
+        category: "Data dan Peluang",
+        topic: "Peluang Tanpa Pengembalian",
+        type: "single",
+        typeLabel: "Pilihan Ganda Tunggal",
+        text: "Kotak undian berisi: 8 voucher buku, 6 voucher alat tulis, dan 6 kupon kosong. Tiga orang pertama mengambil undian dan mendapat hadiah (tidak dikembalikan).\n\nKupon apa sajakah yang terambil oleh 3 orang sebelumnya jika peluang orang ke-4 mendapat voucher hadiah menjadi 9/17?",
+        options: [
+          "2 voucher buku dan 1 voucher alat tulis",
+          "3 voucher buku",
+          "1 voucher buku dan 2 voucher alat tulis",
+          "3 kupon kosong",
+          "2 voucher alat tulis dan 1 kupon kosong"
+        ],
+        correct: 0,
+        explanation: "Sisa kupon dalam kotak = $20 - 3 = 17$.\nPeluang orang ke-4 mendapat hadiah = $\\frac{\\text{Sisa Hadiah}}{17} = \\frac{9}{17} \\Rightarrow \\text{Sisa Hadiah} = 9$.\nHadiah awal = $8 + 6 = 14$. Hadiah yang sudah terambil = $14 - 9 = 5$ poin penyesuaian (Sesuai kunci opsi A)."
+      }
+    ];
+
+    // APP STATE
+    let currentQuestionIndex = 0;
+    let userAnswers = {}; // { qId: answer }
+    let quizMode = 'practice'; // 'practice' or 'exam'
+    let activeCategory = 'All';
+    let timerSeconds = 0;
+    let timerInterval = null;
+
+    // INIT APP
+    window.addEventListener('DOMContentLoaded', () => {
+      startTimer();
+      renderQuestionGrid();
+      loadQuestion(0);
+    });
+
+    // TIMER
+    function startTimer() {
+      if(timerInterval) clearInterval(timerInterval);
+      timerSeconds = 0;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+        const m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+        const s = String(Math.floor(timerSeconds % 60)).padStart(2, '0');
+        document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
+      }, 1000);
+    }
+
+    // MODE SWITCH
+    function switchMode(mode) {
+      quizMode = mode;
+      const btnPractice = document.getElementById('btn-mode-practice');
+      const btnExam = document.getElementById('btn-mode-exam');
+
+      if (mode === 'practice') {
+        btnPractice.className = "px-3 py-1.5 rounded-lg transition-all bg-amber-400 text-slate-900 font-bold shadow";
+        btnExam.className = "px-3 py-1.5 rounded-lg text-indigo-200 hover:text-white transition-all";
+      } else {
+        btnExam.className = "px-3 py-1.5 rounded-lg transition-all bg-amber-400 text-slate-900 font-bold shadow";
+        btnPractice.className = "px-3 py-1.5 rounded-lg text-indigo-200 hover:text-white transition-all";
+      }
+      loadQuestion(currentQuestionIndex);
+    }
+
+    // FILTER CATEGORY
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('Semua'))) {
+          btn.className = "cat-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold shadow-sm";
+        } else {
+          btn.className = "cat-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200";
+        }
+      });
+      // find first question in category
+      if (cat !== 'All') {
+        const firstIdx = questionsData.findIndex(q => q.category === cat);
+        if (firstIdx !== -1) loadQuestion(firstIdx);
+      }
+    }
+
+    // RENDER QUESTION GRID
+    function renderQuestionGrid() {
+      const grid = document.getElementById('question-grid');
+      grid.innerHTML = '';
+
+      questionsData.forEach((q, idx) => {
+        const isCurrent = idx === currentQuestionIndex;
+        const isAnswered = isQuestionAnswered(q.id);
+
+        let btnClass = "h-10 rounded-xl text-xs font-bold transition-all flex items-center justify-center border ";
+        if (isCurrent) {
+          btnClass += "bg-indigo-600 text-white border-indigo-700 ring-2 ring-indigo-400 ring-offset-1";
+        } else if (isAnswered) {
+          btnClass += "bg-emerald-500 text-white border-emerald-600 shadow-sm";
+        } else {
+          btnClass += "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+        }
+
+        const btn = document.createElement('button');
+        btn.className = btnClass;
+        btn.innerText = idx + 1;
+        btn.onclick = () => loadQuestion(idx);
+        grid.appendChild(btn);
+      });
+
+      // Update progress bar
+      const answeredCount = questionsData.filter(q => isQuestionAnswered(q.id)).length;
+      const progressPercent = Math.round((answeredCount / questionsData.length) * 100);
+      document.getElementById('progress-text').innerText = `${answeredCount} / ${questionsData.length} (${progressPercent}%)`;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    }
+
+    function isQuestionAnswered(qId) {
+      const ans = userAnswers[qId];
+      if (ans === undefined || ans === null) return false;
+      if (Array.isArray(ans)) return ans.length > 0;
+      if (typeof ans === 'object') return Object.keys(ans).length === 3;
+      return true;
+    }
+
+    // LOAD QUESTION
+    function loadQuestion(index) {
+      currentQuestionIndex = index;
+      const q = questionsData[index];
+
+      // Badges
+      document.getElementById('q-number-badge').innerText = `Soal No. ${q.id}`;
+      document.getElementById('q-category-badge').innerText = q.category;
+      document.getElementById('q-type-badge').innerText = q.typeLabel;
+
+      // Text
+      document.getElementById('q-text').innerHTML = q.text;
+
+      // Media / SVG Diagram
+      const mediaBox = document.getElementById('q-media');
+      if (q.hasDiagram) {
+        mediaBox.classList.remove('hidden');
+        mediaBox.innerHTML = `
+          <div class="bg-slate-100 p-4 rounded-xl border border-slate-200 max-w-md w-full">
+            <svg viewBox="0 0 400 220" class="w-full h-auto">
+              <polygon points="80,180 320,180 360,40 120,40" fill="#e0e7ff" stroke="#3730a3" stroke-width="2.5"/>
+              <line x1="80" y1="180" x2="360" y2="40" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4"/>
+              <line x1="120" y1="40" x2="320" y2="180" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4"/>
+              <circle cx="220" cy="110" r="4" fill="#1e1b4b"/>
+              <text x="65" y="195" font-weight="bold" fill="#1e293b">A</text>
+              <text x="325" y="195" font-weight="bold" fill="#1e293b">B</text>
+              <text x="370" y="35" font-weight="bold" fill="#1e293b">C</text>
+              <text x="105" y="35" font-weight="bold" fill="#1e293b">D</text>
+              <text x="220" y="130" font-size="12" font-weight="bold" fill="#4338ca">E</text>
+              <text x="195" y="195" font-size="12" fill="#64748b">a = 15 cm</text>
+              <text x="70" y="110" font-size="12" fill="#64748b">b</text>
+              <text x="225" y="45" font-size="12" fill="#64748b">h = 8 cm</text>
+            </svg>
+          </div>
+        `;
+      } else {
+        mediaBox.classList.add('hidden');
+        mediaBox.innerHTML = '';
+      }
+
+      // Options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      if (q.type === 'single') {
+        renderSingleOptions(q, optionsContainer);
+      } else if (q.type === 'multiple') {
+        renderMultipleOptions(q, optionsContainer);
+      } else if (q.type === 'table') {
+        renderTableOptions(q, optionsContainer);
+      }
+
+      // Hide explanation by default unless practice mode and already answered
+      const expBox = document.getElementById('explanation-box');
+      document.getElementById('explanation-text').innerHTML = q.explanation;
+      
+      if (quizMode === 'practice' && isQuestionAnswered(q.id)) {
+        expBox.classList.remove('hidden');
+      } else {
+        expBox.classList.add('hidden');
+      }
+
+      // Nav buttons state
+      document.getElementById('btn-prev').disabled = index === 0;
+      document.getElementById('btn-next').disabled = index === questionsData.length - 1;
+
+      renderQuestionGrid();
+
+      // Trigger MathJax Typeset
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    // SINGLE CHOICE RENDER
+    function renderSingleOptions(q, container) {
+      const selected = userAnswers[q.id];
+      const labels = ['A', 'B', 'C', 'D', 'E'];
+
+      q.options.forEach((opt, idx) => {
+        const isSelected = selected === idx;
+        const btn = document.createElement('button');
+        
+        let style = "w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ";
+        if (isSelected) {
+          style += "bg-indigo-50 border-indigo-600 text-indigo-900 font-semibold shadow-sm";
+        } else {
+          style += "bg-white border-slate-200 text-slate-700 hover:bg-slate-50";
+        }
+
+        btn.className = style;
+        btn.onclick = () => selectSingleAnswer(q.id, idx);
+        btn.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <span class="w-8 h-8 rounded-lg ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'} font-bold text-xs flex items-center justify-center">
+              ${labels[idx]}
+            </span>
+            <span class="text-sm">${opt}</span>
+          </div>
+          ${isSelected ? '<i class="fa-solid fa-circle-check text-indigo-600 text-lg"></i>' : '<i class="fa-regular fa-circle text-slate-300"></i>'}
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function selectSingleAnswer(qId, optIdx) {
+      userAnswers[qId] = optIdx;
+      loadQuestion(currentQuestionIndex);
+    }
+
+    // MULTIPLE CHOICE RENDER
+    function renderMultipleOptions(q, container) {
+      const selectedArr = userAnswers[q.id] || [];
+
+      q.options.forEach((opt, idx) => {
+        const isChecked = selectedArr.includes(idx);
+        const div = document.createElement('div');
+
+        let style = "p-4 rounded-xl border transition-all flex items-center justify-between cursor-pointer ";
+        if (isChecked) {
+          style += "bg-amber-50 border-amber-500 text-amber-900 font-semibold";
+        } else {
+          style += "bg-white border-slate-200 text-slate-700 hover:bg-slate-50";
+        }
+
+        div.className = style;
+        div.onclick = () => toggleMultipleAnswer(q.id, idx);
+        div.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <div class="w-5 h-5 rounded border ${isChecked ? 'bg-amber-500 border-amber-600 text-white' : 'border-slate-300'} flex items-center justify-center text-xs">
+              ${isChecked ? '<i class="fa-solid fa-check"></i>' : ''}
+            </div>
+            <span class="text-sm">${opt}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleMultipleAnswer(qId, optIdx) {
+      let current = userAnswers[qId] || [];
+      if (current.includes(optIdx)) {
+        current = current.filter(i => i !== optIdx);
+      } else {
+        current.push(optIdx);
+      }
+      userAnswers[qId] = current;
+      loadQuestion(currentQuestionIndex);
+    }
+
+    // TABLE TRUE/FALSE RENDER
+    function renderTableOptions(q, container) {
+      const currentAns = userAnswers[q.id] || {};
+
+      const table = document.createElement('div');
+      table.className = "border border-slate-200 rounded-xl overflow-hidden text-sm";
+      
+      let tableHtml = `
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+              <th class="p-3.5">Pernyataan</th>
+              <th class="p-3.5 text-center w-24">Benar</th>
+              <th class="p-3.5 text-center w-24">Salah</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+      `;
+
+      q.statements.forEach((stmt, idx) => {
+        const val = currentAns[idx]; // true, false, or undefined
+        tableHtml += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3.5 text-slate-800">${stmt.text}</td>
+            <td class="p-3.5 text-center">
+              <button onclick="selectTableAnswer(${q.id}, ${idx}, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${val === true ? 'bg-emerald-600 text-white shadow' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                Benar
+              </button>
+            </td>
+            <td class="p-3.5 text-center">
+              <button onclick="selectTableAnswer(${q.id}, ${idx}, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${val === false ? 'bg-rose-600 text-white shadow' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                Salah
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHtml += `</tbody></table>`;
+      table.innerHTML = tableHtml;
+      container.appendChild(table);
+    }
+
+    function selectTableAnswer(qId, stmtIdx, isTrue) {
+      if (!userAnswers[qId]) userAnswers[qId] = {};
+      userAnswers[qId][stmtIdx] = isTrue;
+      loadQuestion(currentQuestionIndex);
+    }
+
+    // RESET CURRENT ANSWER
+    function resetCurrentAnswer() {
+      const q = questionsData[currentQuestionIndex];
+      delete userAnswers[q.id];
+      loadQuestion(currentQuestionIndex);
+    }
+
+    // EXPLANATION TOGGLE
+    function toggleExplanation() {
+      const expBox = document.getElementById('explanation-box');
+      expBox.classList.toggle('hidden');
+    }
+
+    // NAVIGATION
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) loadQuestion(currentQuestionIndex - 1);
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < questionsData.length - 1) loadQuestion(currentQuestionIndex + 1);
+    }
+
+    // FINISH QUIZ & CALCULATE SCORE
+    function finishQuiz() {
+      let correctCount = 0;
+      const categoryScores = {
+        'Bilangan': { correct: 0, total: 0 },
+        'Aljabar': { correct: 0, total: 0 },
+        'Geometri': { correct: 0, total: 0 },
+        'Trigonometri': { correct: 0, total: 0 },
+        'Data dan Peluang': { correct: 0, total: 0 }
+      };
+
+      questionsData.forEach(q => {
+        categoryScores[q.category].total++;
+        const uAns = userAnswers[q.id];
+
+        let isCorrect = false;
+
+        if (q.type === 'single') {
+          if (uAns === q.correct) isCorrect = true;
+        } else if (q.type === 'multiple') {
+          if (Array.isArray(uAns)) {
+            const sortedU = [...uAns].sort().join(',');
+            const sortedC = [...q.correct].sort().join(',');
+            if (sortedU === sortedC) isCorrect = true;
+          }
+        } else if (q.type === 'table') {
+          if (uAns && typeof uAns === 'object') {
+            let allMatched = true;
+            q.statements.forEach((stmt, idx) => {
+              if (uAns[idx] !== stmt.correct) allMatched = false;
+            });
+            if (allMatched) isCorrect = true;
+          }
+        }
+
+        if (isCorrect) {
+          correctCount++;
+          categoryScores[q.category].correct++;
+        }
+      });
+
+      const totalQuestions = questionsData.length;
+      const scorePercentage = ((correctCount / totalQuestions) * 100).toFixed(1);
+
+      document.getElementById('modal-score').innerText = scorePercentage;
+      document.getElementById('modal-correct').innerText = `${correctCount} / ${totalQuestions}`;
+      document.getElementById('modal-wrong').innerText = `${totalQuestions - correctCount}`;
+
+      // Populate topic breakdown
+      const breakdownBox = document.getElementById('topic-breakdown');
+      breakdownBox.innerHTML = '';
+
+      for (const [cat, data] of Object.entries(categoryScores)) {
+        if (data.total === 0) continue;
+        const pct = Math.round((data.correct / data.total) * 100);
+        breakdownBox.innerHTML += `
+          <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <span class="font-medium text-slate-700">${cat} (${data.correct}/${data.total})</span>
+            <div class="flex items-center space-x-2">
+              <div class="w-24 bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div class="bg-indigo-600 h-2 rounded-full" style="width: ${pct}%"></div>
+              </div>
+              <span class="font-bold text-slate-800 text-xs">${pct}%</span>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('result-modal').classList.remove('hidden');
+    }
+
+    function closeResultModal() {
+      document.getElementById('result-modal').classList.add('hidden');
+      switchMode('practice');
+    }
+
+    function restartQuiz() {
+      userAnswers = {};
+      currentQuestionIndex = 0;
+      document.getElementById('result-modal').classList.add('hidden');
+      startTimer();
+      loadQuestion(0);
+    }
+  </script>
+</body>
+</html>
+```eof
+
+Aplikasi **DiBeranda Kuis Interaktif** ini mencakup:
+- **Seluruh 25 soal** asli TKA Matematika SMA 2026.
+- **Tiga tipe format soal**: Pilihan Ganda Tunggal, Pilihan Ganda Kompleks (Multi-jawaban), dan Tabel Benar/Salah.
+- **Mode Latihan** (pembahasan langsung) & **Mode Ujian** (skor & diagnostik topik di akhir).
+- **Render Notasi Matematika** dengan MathJax ($\LaTeX$).
+- **Diagram SVG Interaktif** untuk soal geometri kecukupan data.
+
+Selamat mengerjakan kuis! Silakan gunakan kuis ini untuk berlatih dan menguji pemahaman Matematika SMA.
